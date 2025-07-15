@@ -1,9 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import "./App.css";
 
 function App() {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
   const [pdfUrl, setPdfUrl] = useState(null);
+  const inputRef = useRef();
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setStatus("");
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setFile(e.dataTransfer.files[0]);
+    }
+  };
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -15,7 +29,7 @@ function App() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/brief", {
+      const response = await fetch("http://127.0.0.1:8000/brief-with-meetings", {
         method: "POST",
         body: formData,
       });
@@ -34,23 +48,65 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial" }}>
-      <h1>Creative Brief Generator</h1>
-      <form onSubmit={handleUpload}>
+    <div className="container">
+      <div className="header">
+        <img src="/infosys-logo.png" alt="Infosys" className="logo" />
+        <div className="signin">👤 Login/Sign In</div>
+      </div>
+
+      <div className="titles">
+        <h1 className="title">AutoBrief</h1>
+        <p className="subtitle">Turn your media into concise creative briefs.</p>
+      </div>
+
+      <form onSubmit={handleUpload} className="dropzone"
+        onClick={() => inputRef.current.click()}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleDrop}
+      >
+        <img src="/upload-blue.png" alt="upload" className="upload-icon" />
+        <p>
+          <strong>Drop your images here, or <span className="browse">browse</span></strong>
+        </p>
+        <p className="hint">Supports TXT, PDF, CSV, XLSX, PNG, JPG, MP3, MP4</p>
         <input
           type="file"
-          onChange={(e) => setFile(e.target.files[0])}
+          onChange={handleFileChange}
+          ref={inputRef}
+          hidden
           required
         />
-        <button type="submit">Generate Brief</button>
+        {status && <div className="status">{status}</div>}
+        {pdfUrl && (
+          <div className="status">
+            <a href={pdfUrl} download="brief_output.pdf">Download Brief PDF</a>
+          </div>
+        )}
       </form>
 
-      <div style={{ marginTop: "1rem" }}>{status}</div>
-
-      {pdfUrl && (
-        <div style={{ marginTop: "1rem" }}>
-          <a href={pdfUrl} download="brief_output.pdf">Download Brief PDF</a>
+      {file && (
+        <div className="file-preview">
+          <div className="file-info">
+            <img src="/file-icon.png" alt="file" className="file-icon" />
+            <span className="file-name">{file.name}</span>
+          </div>
+          <button
+            type="button"
+            className="close-btn"
+            onClick={() => {
+              setFile(null);
+              setPdfUrl(null);
+              setStatus("");
+            }}
+          >
+            ×
+          </button>
         </div>
+      )}
+
+
+      {file && (
+        <button type="submit" className="generate-btn">Generate Brief</button>
       )}
     </div>
   );
