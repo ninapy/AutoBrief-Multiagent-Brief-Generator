@@ -1,6 +1,8 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from agents.parser_agent import parse_file
+from agents.briefer_agent import generate_brief
+from utils.pdf_generator import generate_pdf
 import logging
 from dotenv import load_dotenv
 import os
@@ -81,14 +83,18 @@ async def create_brief(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail=parse_result["error"])
         
         # Step 2: Generate brief (placeholder for now)
-        # brief_result = generate_brief(parse_result["content"])
+        brief_result = generate_brief(parse_result["content"])
+        pdf_path = generate_pdf(brief_result, "brief_output.pdf")
+
         
         return {
             "success": True,
             "parsed_content": parse_result["content"],
-            "brief": "Brief generation will be implemented by teammate",
-            "message": "File parsed successfully, brief generation pending"
+            "brief": brief_result,
+            "pdf_path": pdf_path,
+            "message": "Brief generated and PDF saved in root directory"
         }
+
         
     except HTTPException:
         raise
