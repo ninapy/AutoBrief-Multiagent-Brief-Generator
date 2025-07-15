@@ -36,7 +36,7 @@ async def parse_uploaded_file(file: UploadFile = File(...)):
     Parse uploaded file and extract text content
     """
     try:
-        MAX_FILE_SIZE = 10 * 1024 * 1024
+        MAX_FILE_SIZE = 15 * 1024 * 1024  # 10MB
         
         file_size = 0
         file_content = await file.read()
