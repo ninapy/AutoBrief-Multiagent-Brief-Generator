@@ -4,6 +4,15 @@ from PIL import Image
 import pytesseract
 import logging
 import pandas as pd
+from moviepy.editor import VideoFileClip
+import tempfile
+from openai import OpenAI
+import os
+
+# from dotenv import load_dotenv
+# load_dotenv()
+
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -174,6 +183,80 @@ def load_excel(file_bytes):
     
     except Exception as e:
         logger.error(f"Error processing Excel: {e}")
+    
+
+def load_video(file_bytes):
+    pass
+#     """
+#     Extract audio from video file bytes and transcribe to text using OpenAI Whisper
+#     """
+#     try:
+#         # Create temporary files for video processing
+#         with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+#             temp_video.write(file_bytes)
+#             temp_video_path = temp_video.name
+        
+#         with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_audio:
+#             temp_audio_path = temp_audio.name
+        
+#         try:
+#             # Extract audio from video using moviepy
+#             logger.info("Extracting audio from video...")
+#             with VideoFileClip(temp_video_path) as video:
+#                 # Extract audio and save as WAV
+#                 audio = video.audio
+#                 if audio is None:
+#                     return "No audio track found in video"
+                
+#                 audio.write_audiofile(temp_audio_path, verbose=False, logger=None)
+                
+#                 # Get video duration for context
+#                 duration = video.duration
+#                 logger.info(f"Video duration: {duration:.2f} seconds")
+            
+#             # Transcribe audio using OpenAI Whisper
+#             logger.info("Transcribing audio to text...")
+#             # with open(temp_audio_path, 'rb') as audio_file:
+#             #     transcript = openai.Audio.transcribe(
+#             #         model="whisper-1",
+#             #         file=audio_file,
+#             #         response_format="text"
+#             #     )
+#             with open(temp_audio_path, "rb") as f:
+#                 transcript = client.audio.transcriptions.create(
+#                     model="whisper-1",
+#                     file=f
+#                 )
+            
+#             if not transcript or not transcript.strip():
+#                 return "No speech detected in video audio"
+            
+#             # Format the output with metadata
+#             result = [
+#                 f"--- Video Transcription ---",
+#                 f"Duration: {duration:.2f} seconds",
+#                 f"Transcript:",
+#                 transcript.strip()
+#             ]
+            
+#             return "\n\n".join(result)
+            
+#         except Exception as e:
+#             logger.error(f"Error during video/audio processing: {e}")
+#             return f"Error processing video: {str(e)}"
+        
+#         finally:
+#             # Clean up temporary files
+#             try:
+#                 os.unlink(temp_video_path)
+#                 os.unlink(temp_audio_path)
+#             except Exception as cleanup_error:
+#                 logger.warning(f"Could not clean up temporary files: {cleanup_error}")
+    
+#     except Exception as e:
+#         logger.error(f"Error processing video: {e}")
+#         return f"Error processing video: {str(e)}"
+
 
 def normalize_text(text):
     """
