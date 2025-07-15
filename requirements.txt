@@ -1,0 +1,16 @@
+fastapi==0.111.0
+uvicorn==0.30.0
+python-multipart==0.0.9 # for file uploads
+openai==1.30.1
+reportlab==4.1.0 # for PDF generation
+pillow==10.3.0 # for image loading
+pytesseract==0.3.10 # for OCR on images (optional)
+pdfplumber==0.11.0 # for extracting text from PDFs
+filetype==1.2.0 # to detect file types
+python-dotenv==1.0.0  # for environment variables (OpenAI API key)
+pandas==2.2.0         # for CSV/Excel handling
+openpyxl==3.1.2       # for Excel file support
+requests==2.31.0      # for URL crawling
+beautifulsoup4==4.12.0 # for web scraping
+# whisper @ git+https://github.com/openai/whisper.git # for video/audio transcription
+# ffmpeg-python==0.2.0 # used by Whisper for processing media
