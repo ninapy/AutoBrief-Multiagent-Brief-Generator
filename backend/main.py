@@ -10,6 +10,12 @@ from backend.agents.parser_agent import parse_file
 from backend.agents.briefer_agent import generate_brief
 from backend.utils.pdf_generator import generate_pdf
 
+<<<<<<< Updated upstream
+=======
+from agents.meeting_scheduler_agent import MeetingSchedulerAgent, TeamMember, meetings_to_dict
+from mock_team_data import EDGEVERVE_TEAM, get_team_data_json
+from typing import List, Optional
+>>>>>>> Stashed changes
 
 load_dotenv()
 
@@ -86,6 +92,124 @@ async def create_brief(file: UploadFile = File(...)):
     except Exception as e:
         logger.error(f"Error in brief endpoint: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+    
+# Initialize the meeting scheduler
+meeting_scheduler = MeetingSchedulerAgent()
+
+@app.post("/brief-with-meetings")
+async def create_brief_with_meetings(
+    file: UploadFile = File(...), 
+    custom_team: Optional[List[dict]] = None
+):
+    """
+    Enhanced endpoint that generates both brief and meeting schedule
+    """
+    try:
+        # Step 1: Process the file and generate brief (your existing logic)
+        content = await parse_file(file)
+        if not content["success"]:
+            raise HTTPException(400, content["error"])
+        
+        brief = generate_brief(content["content"])
+        pdf_path = generate_pdf(brief)
+        
+        # Step 2: Use team data (custom or default)
+        if custom_team:
+            # Convert custom team data to TeamMember objects
+            team_members = [
+                TeamMember(
+                    name=member["name"],
+                    email=member["email"], 
+                    role=member["role"],
+                    department=member.get("department", "Unknown"),
+                    specialties=member.get("specialties", [])
+                )
+                for member in custom_team
+            ]
+        else:
+            # Use default EdgeVerve team
+            team_members = EDGEVERVE_TEAM
+        
+        # Step 3: Generate meeting schedule
+        meetings = meeting_scheduler.schedule_meetings(brief, team_members)
+        
+        # Step 4: Return comprehensive response
+        return {
+            "success": True,
+            "brief": brief,
+            "pdf_path": pdf_path,
+            "meetings": meetings_to_dict(meetings),
+            "team_used": len(team_members),
+            "file_info": {
+                "filename": file.filename,
+                "type": content["file_type"]
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in brief_with_meetings: {e}")
+        raise HTTPException(500, f"Failed to process: {str(e)}")
+
+@app.post("/schedule-meetings")
+async def schedule_meetings_only(
+    brief_text: str,
+    team_members: Optional[List[dict]] = None
+):
+    """
+    Endpoint to just generate meetings from existing brief text
+    """
+    try:
+        # Use custom team or default
+        if team_members:
+            team = [
+                TeamMember(
+                    name=member["name"],
+                    email=member["email"],
+                    role=member["role"], 
+                    department=member.get("department", "Unknown"),
+                    specialties=member.get("specialties", [])
+                )
+                for member in team_members
+            ]
+        else:
+            team = EDGEVERVE_TEAM
+        
+        meetings = meeting_scheduler.schedule_meetings(brief_text, team)
+        
+        return {
+            "success": True,
+            "meetings": meetings_to_dict(meetings),
+            "team_size": len(team)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error scheduling meetings: {e}")
+        raise HTTPException(500, f"Failed to schedule meetings: {str(e)}")
+
+@app.get("/team-roster")
+async def get_team_roster():
+    """
+    Get the default company team roster for frontend display
+    """
+    return {
+        "success": True,
+        "team": get_team_data_json(),
+        "total_members": len(EDGEVERVE_TEAM)
+    }
+
+@app.post("/analyze-brief")
+async def analyze_brief_requirements(brief_text: str):
+    """
+    Analyze a brief to see what it would require (for testing/debugging)
+    """
+    try:
+        analysis = meeting_scheduler.analyze_brief_requirements(brief_text)
+        return {
+            "success": True,
+            "analysis": analysis
+        }
+    except Exception as e:
+        raise HTTPException(500, f"Analysis failed: {str(e)}")
 
 @app.get("/health")
 async def health_check():
