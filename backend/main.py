@@ -36,7 +36,7 @@ async def parse_uploaded_file(file: UploadFile = File(...)):
     """
     try:
         # Validate file size (optional - adjust as needed)
-        MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+        MAX_FILE_SIZE = 15 * 1024 * 1024  # 10MB
         
         # Check if file is too large
         file_size = 0
