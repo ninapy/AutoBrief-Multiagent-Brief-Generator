@@ -1,125 +1,139 @@
 # mock_team_data.py
 from agents.meeting_scheduler_agent import TeamMember
 
-# Mock EdgeVerve AI team for demo
-EDGEVERVE_TEAM = [
+# Mock Infosys team for demo
+INFOSYS_TEAM = [
     # Executive Leadership
     TeamMember(
-        name="David Park",
-        email="david.park@edgeverve.ai",
-        role="VP of Marketing",
+        name="Nina Py",
+        email="nina.py@infosys.com", 
+        role="VP Marketing - Americas",
         department="Marketing",
-        specialties=["strategic_planning", "executive_approval", "budget_approval"]
+        specialties=["regional_strategy", "executive_approval", "market_positioning"]
     ),
     TeamMember(
-        name="Sarah Chen",
-        email="sarah.chen@edgeverve.ai", 
-        role="Chief Marketing Officer",
+        name="Julius Trubel",
+        email="julius.trubel@infosys.com",
+        role="VP Marketing - APAC",
         department="Marketing",
-        specialties=["brand_strategy", "executive_approval", "market_positioning"]
+        specialties=["regional_strategy", "executive_approval", "emerging_markets"]
     ),
     
-    # Marketing Team
+    # Global Marketing Team
     TeamMember(
-        name="Jessica Rodriguez",
-        email="jessica.rodriguez@edgeverve.ai",
-        role="Brand Manager",
+        name="Avni Hulyalkar",
+        email="avni.hulyalkar@infosys.com",
+        role="Global Brand Manager",
         department="Marketing",
         specialties=["brand_consistency", "messaging", "brand_guidelines"]
     ),
     TeamMember(
         name="Michael Thompson",
-        email="michael.thompson@edgeverve.ai",
-        role="Digital Marketing Manager",
+        email="michael.thompson@infosys.com",
+        role="Head of Digital Marketing",
         department="Marketing", 
-        specialties=["social_media", "digital_campaigns", "analytics"]
+        specialties=["digital_campaigns", "social_media", "marketing_automation"]
+    ),
+    TeamMember(
+        name="David Park",
+        email="david.park@infosys.com",
+        role="Chief Marketing Officer",
+        department="Marketing",
+        specialties=["strategic_planning", "executive_approval", "global_campaigns"]
     ),
     TeamMember(
         name="Amanda Foster",
-        email="amanda.foster@edgeverve.ai",
-        role="Content Marketing Manager",
+        email="amanda.foster@infosys.com",
+        role="Global Content Strategy Director",
         department="Marketing",
-        specialties=["content_strategy", "copywriting", "blog_management"]
-    ),g
+        specialties=["content_strategy", "thought_leadership", "analyst_relations"]
+    ),
     
     # Creative/Design Team
     TeamMember(
         name="Alex Kim",
-        email="alex.kim@edgeverve.ai",
-        role="Creative Director",
-        department="Design",
+        email="alex.kim@infosys.com",
+        role="Global Creative Director",
+        department="Creative",
         specialties=["creative_direction", "visual_design", "campaign_concepts"]
     ),
     TeamMember(
         name="Maya Patel",
-        email="maya.patel@edgeverve.ai",
-        role="Senior Graphic Designer",
-        department="Design",
+        email="maya.patel@infosys.com",
+        role="Senior Brand Designer",
+        department="Creative",
         specialties=["graphic_design", "visual_assets", "brand_materials"]
     ),
     TeamMember(
         name="Chris Johnson",
-        email="chris.johnson@edgeverve.ai",
-        role="Video Producer",
-        department="Design",
-        specialties=["video_production", "multimedia", "storytelling"]
+        email="chris.johnson@infosys.com",
+        role="Video Production Manager",
+        department="Creative",
+        specialties=["video_production", "multimedia", "digital_storytelling"]
     ),
     
-    # Product Team
+    # Industry & Solutions Marketing
     TeamMember(
         name="Ryan Walsh",
-        email="ryan.walsh@edgeverve.ai",
-        role="Product Marketing Manager",
-        department="Product",
-        specialties=["product_messaging", "go_to_market", "feature_launches"]
+        email="ryan.walsh@infosys.com",
+        role="Industry Marketing Director - Financial Services",
+        department="Marketing",
+        specialties=["industry_messaging", "sector_expertise", "client_case_studies"]
     ),
     TeamMember(
         name="Lisa Park",
-        email="lisa.park@edgeverve.ai",
-        role="Product Manager",
-        department="Product",
-        specialties=["product_strategy", "user_experience", "technical_requirements"]
+        email="lisa.park@infosys.com",
+        role="Solutions Marketing Manager - AI & Automation",
+        department="Marketing",
+        specialties=["solution_positioning", "technical_messaging", "product_marketing"]
     ),
     
-    # Sales Team
-    TeamMember(
-        name="Robert Martinez",
-        email="robert.martinez@edgeverve.ai",
-        role="Sales Director",
-        department="Sales",
-        specialties=["sales_enablement", "customer_insights", "market_feedback"]
-    ),
-    TeamMember(
-        name="Jennifer Lee",
-        email="jennifer.lee@edgeverve.ai",
-        role="Sales Operations Manager",
-        department="Sales",
-        specialties=["sales_tools", "process_optimization", "data_analysis"]
-    ),
-    
-    # Communications/PR
+    # Communications & PR
     TeamMember(
         name="Daniel Brown",
-        email="daniel.brown@edgeverve.ai",
-        role="Communications Manager",
-        department="Marketing",
-        specialties=["public_relations", "media_relations", "crisis_communication"]
+        email="daniel.brown@infosys.com",
+        role="Global Communications Director",
+        department="Communications",
+        specialties=["public_relations", "crisis_communication", "media_relations"]
+    ),
+    TeamMember(
+        name="Priya Sharma",
+        email="priya.sharma@infosys.com",
+        role="Internal Communications Manager",
+        department="Communications",
+        specialties=["employee_communications", "change_management", "internal_campaigns"]
     ),
     
-    # Operations
+    # Sales Enablement & Operations
+    TeamMember(
+        name="Robert Martinez",
+        email="robert.martinez@infosys.com",
+        role="Global Sales Enablement Director",
+        department="Sales",
+        specialties=["sales_enablement", "training_materials", "competitive_intelligence"]
+    ),
     TeamMember(
         name="Sophie Wilson",
-        email="sophie.wilson@edgeverve.ai",
-        role="Marketing Operations Manager", 
+        email="sophie.wilson@infosys.com",
+        role="Marketing Operations Director", 
         department="Marketing",
-        specialties=["campaign_operations", "marketing_automation", "data_management"]
+        specialties=["campaign_operations", "marketing_automation", "data_analytics"]
     ),
     
-    # External Stakeholders (for comprehensive planning)
+    # Legal & Compliance
     TeamMember(
-        name="External Agency",
-        email="contact@creativepartners.com",
-        role="External Creative Agency",
+        name="Jennifer Lee",
+        email="jennifer.lee@infosys.com",
+        role="Legal Counsel - Marketing",
+        department="Legal",
+        specialties=["legal_review", "compliance", "risk_management"]
+    ),
+    
+    # External Partners
+    TeamMember(
+        name="External Agency Lead",
+        email="contact@globalcreative.com",
+        role="External Creative Partner",
         department="External",
         specialties=["external_creative", "specialized_campaigns", "additional_resources"]
     )
@@ -127,17 +141,17 @@ EDGEVERVE_TEAM = [
 
 # Helper function to get team members by department
 def get_team_by_department(department: str):
-    return [member for member in EDGEVERVE_TEAM if member.department.lower() == department.lower()]
+    return [member for member in INFOSYS_TEAM if member.department.lower() == department.lower()]
 
 # Helper function to get team members by specialty
 def get_team_by_specialty(specialty: str):
-    return [member for member in EDGEVERVE_TEAM 
+    return [member for member in INFOSYS_TEAM 
             if member.specialties and specialty in member.specialties]
 
 # Helper function to get executives
 def get_executives():
-    executive_roles = ["VP", "Chief", "Director"]
-    return [member for member in EDGEVERVE_TEAM 
+    executive_roles = ["VP", "Chief", "Director", "Head of"]
+    return [member for member in INFOSYS_TEAM 
             if any(role in member.role for role in executive_roles)]
 
 # For API endpoint - return as JSON-serializable format
@@ -150,5 +164,5 @@ def get_team_data_json():
             "department": member.department,
             "specialties": member.specialties or []
         }
-        for member in EDGEVERVE_TEAM
+        for member in INFOSYS_TEAM
     ]
