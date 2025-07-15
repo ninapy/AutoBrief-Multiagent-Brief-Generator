@@ -16,7 +16,7 @@ body {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 2%;
+  margin-top: 1.5%;
 }
 
 .logo {
@@ -179,13 +179,17 @@ body {
 }
 
 .download-btn {
+  margin-top: 1.5rem;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
   background-color: #007cc3;
   color: white;
-  padding: 0.75rem 2rem;
+  border: none;
   border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.3s;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: None;
 }
 
 .download-btn:hover {
@@ -194,8 +198,19 @@ body {
 
 .buttons {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-items: center;
   
 }
+
+.language-selector {
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.language-selector select {
+  margin-left: 0.5rem;
+  padding: 0.25rem;
+}
+
