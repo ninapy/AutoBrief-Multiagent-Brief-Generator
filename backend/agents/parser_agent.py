@@ -1,6 +1,6 @@
 import filetype
 import logging
-from utils.file_loader import load_pdf, load_image, load_text, load_csv, load_excel, load_video, normalize_text
+from utils.file_loader import load_pdf, load_image, load_text, load_csv, load_excel, load_video, load_audio, normalize_text
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -41,6 +41,10 @@ async def parse_file(uploaded_file):
         elif filename.endswith(('.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv')):
             logger.info("Detected video file")
             raw_text = load_video(file_bytes)
+
+        elif filename.endswith(('.m4a', '.mp3', '.wav', '.aac', '.flac', '.ogg')):
+            logger.info("Detected audio file")
+            raw_text = load_audio(file_bytes)
             
         else:
             # Fall back to filetype detection if extension doesn't match
@@ -72,6 +76,9 @@ async def parse_file(uploaded_file):
             elif kind.mime.startswith('video/'):
                 logger.info(f"Detected video file by MIME type: {kind.mime}")
                 raw_text = load_video(file_bytes)
+            elif kind.mime.startswith('audio/'):
+                logger.info(f"Detected audio file by MIME type: {kind.mime}")
+                raw_text = load_audio(file_bytes)
             else:
                 return {
                     "success": False,
@@ -123,6 +130,8 @@ def get_file_type(filename):
         return "excel"
     elif filename.endswith(('.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv')):
         return "video"
+    elif filename.endswith(('.m4a', '.mp3', '.wav', '.aac', '.flac', '.ogg')):
+        return "audio"
     else:
         return "unknown"
 

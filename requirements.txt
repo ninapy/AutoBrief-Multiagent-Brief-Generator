@@ -13,5 +13,6 @@ openpyxl==3.1.2       # for Excel file support
 requests==2.31.0      # for URL crawling
 beautifulsoup4==4.12.0 # for web scraping
 moviepy==1.0.3
+pydub>=0.25.1
 # whisper @ git+https://github.com/openai/whisper.git # for video/audio transcription
 # ffmpeg-python==0.2.0 # used by Whisper for processing media
