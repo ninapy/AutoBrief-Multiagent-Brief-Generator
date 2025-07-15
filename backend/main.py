@@ -1,25 +1,26 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from agents.parser_agent import parse_file
-from agents.briefer_agent import generate_brief
-from utils.pdf_generator import generate_pdf
+
 import logging
 from dotenv import load_dotenv
 import os
+from fastapi.responses import FileResponse
 
-# Load environment variables
+from backend.agents.parser_agent import parse_file
+from backend.agents.briefer_agent import generate_brief
+from backend.utils.pdf_generator import generate_pdf
+
+
 load_dotenv()
 
-# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Creative Brief Generator API", version="1.0.0")
 
-# Add CORS middleware for React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,10 +36,8 @@ async def parse_uploaded_file(file: UploadFile = File(...)):
     Parse uploaded file and extract text content
     """
     try:
-        # Validate file size (optional - adjust as needed)
-        MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+        MAX_FILE_SIZE = 10 * 1024 * 1024
         
-        # Check if file is too large
         file_size = 0
         file_content = await file.read()
         file_size = len(file_content)
@@ -46,10 +45,8 @@ async def parse_uploaded_file(file: UploadFile = File(...)):
         if file_size > MAX_FILE_SIZE:
             raise HTTPException(status_code=413, detail="File too large")
         
-        # Reset file pointer for processing
         await file.seek(0)
         
-        # Parse the file
         result = await parse_file(file)
         
         if not result["success"]:
@@ -71,31 +68,19 @@ async def parse_uploaded_file(file: UploadFile = File(...)):
 
 @app.post("/brief")
 async def create_brief(file: UploadFile = File(...)):
-    """
-    Full pipeline: Parse file and generate brief
-    This will be completed when your teammate finishes the briefer agent
-    """
     try:
-        # Step 1: Parse the file
         parse_result = await parse_file(file)
-        
         if not parse_result["success"]:
             raise HTTPException(status_code=400, detail=parse_result["error"])
-        
-        # Step 2: Generate brief (placeholder for now)
+
         brief_result = generate_brief(parse_result["content"])
         pdf_path = generate_pdf(brief_result, "brief_output.pdf")
 
-        
-        return {
-            "success": True,
-            "parsed_content": parse_result["content"],
-            "brief": brief_result,
-            "pdf_path": pdf_path,
-            "message": "Brief generated and PDF saved in root directory"
-        }
-
-        
+        return FileResponse(
+            path=pdf_path,
+            filename="brief_output.pdf",
+            media_type="application/pdf"
+        )
     except HTTPException:
         raise
     except Exception as e:
