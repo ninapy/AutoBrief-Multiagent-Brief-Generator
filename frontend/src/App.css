@@ -195,6 +195,23 @@ body {
   background-color: #005f99;
 }
 
+.meetings-btn {
+  margin-top: 1.5rem;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #007cc3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.meetings-btn:hover {
+  background-color: #005f99;
+}
+
 .buttons {
   display: flex;
   flex-direction: column;
