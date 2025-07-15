@@ -147,6 +147,29 @@ async def create_brief_with_meetings(
         logger.error(f"Error in brief_with_meetings: {e}")
         raise HTTPException(500, f"Failed to process: {str(e)}")
 
+@app.get("/download-pdf/{filename}")
+async def download_pdf(filename: str):
+    """
+    Download the generated PDF file
+    """
+    try:
+        # Security check - only allow specific filename
+        if filename != "brief_output.pdf":
+            raise HTTPException(404, "File not found")
+        
+        # Check if file exists
+        if not os.path.exists(filename):
+            raise HTTPException(404, "PDF file not found")
+        
+        return FileResponse(
+            path=filename,
+            filename=filename,
+            media_type="application/pdf"
+        )
+        
+    except Exception as e:
+        logger.error(f"Error downloading PDF: {e}")
+        raise HTTPException(500, "Failed to download PDF")
 
 @app.get("/team-roster")
 async def get_team_roster():
