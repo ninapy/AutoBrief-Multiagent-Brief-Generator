@@ -189,7 +189,7 @@ function App() {
           border: '1px solid #dee2e6'
         }}>
           <h3 style={{ color: '#343a40', marginBottom: '20px' }}>
-            📅 Scheduled Meetings
+            Scheduled Meetings
           </h3>
           
           {meetings.map((meeting, index) => (
@@ -230,19 +230,19 @@ function App() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                 <div>
                   <p style={{ margin: '5px 0', fontSize: '14px' }}>
-                    <strong>📅 Time:</strong> {formatDateTime(meeting.suggested_time)}
+                    <strong>Time:</strong> {formatDateTime(meeting.suggested_time)}
                   </p>
                   <p style={{ margin: '5px 0', fontSize: '14px' }}>
-                    <strong>⏱️ Duration:</strong> {meeting.duration_minutes} minutes
+                    <strong>Duration:</strong> {meeting.duration_minutes} minutes
                   </p>
                   <p style={{ margin: '5px 0', fontSize: '14px' }}>
-                    <strong>🎯 Type:</strong> {meeting.meeting_type}
+                    <strong>Type:</strong> {meeting.meeting_type}
                   </p>
                 </div>
 
                 <div>
                   <p style={{ margin: '5px 0', fontSize: '14px' }}>
-                    <strong>👥 Attendees:</strong>
+                    <strong>Attendees:</strong>
                   </p>
                   <ul style={{ margin: '5px 0', paddingLeft: '20px', fontSize: '13px' }}>
                     {meeting.attendee_names?.map((name, i) => (
@@ -257,7 +257,7 @@ function App() {
               {meeting.agenda && (
                 <div style={{ marginTop: '10px' }}>
                   <p style={{ margin: '5px 0', fontSize: '14px' }}>
-                    <strong>📋 Agenda:</strong>
+                    <strong>Agenda:</strong>
                   </p>
                   <div style={{
                     backgroundColor: '#f8f9fa',
@@ -287,7 +287,7 @@ function App() {
                       fontSize: '13px'
                     }}
                   >
-                    💻 Join Teams Meeting
+                    Join Teams Meeting
                   </a>
                 </div>
               )}
@@ -306,7 +306,7 @@ function App() {
           border: '1px solid #2196f3'
         }}>
           <h4 style={{ margin: '0 0 10px 0', color: '#1976d2' }}>
-            📊 Brief Summary
+            Brief Summary
           </h4>
           <p style={{ margin: '5px 0', fontSize: '14px' }}>
             <strong>File processed:</strong> {briefData.file_info?.filename}
