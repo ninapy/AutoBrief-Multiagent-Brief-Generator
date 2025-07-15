@@ -96,7 +96,7 @@ meeting_scheduler = MeetingSchedulerAgent()
 
 @app.post("/brief-with-meetings")
 async def create_brief_with_meetings(
-    file: UploadFile = File(...), 
+    files: List[UploadFile] = File(...), 
     language: str = Form("English"),
     custom_team: Optional[List[dict]] = None
 ):
@@ -104,35 +104,34 @@ async def create_brief_with_meetings(
     Enhanced endpoint that generates both brief and meeting schedule
     """
     try:
-        # Step 1: Process the file and generate brief (your existing logic)
-        content = await parse_file(file)
-        if not content["success"]:
-            raise HTTPException(400, content["error"])
-        
-        brief = generate_brief(content["content"], language)
+        combined_text = ""
+
+        for file in files:
+            parsed = await parse_file(file)
+            if not parsed["success"]:
+                raise HTTPException(400, parsed["error"])
+            combined_text += f"\n--- File: {file.filename} ---\n{parsed['content']}\n"
+            print(combined_text)
+
+        if len(combined_text) > 12000:
+            raise HTTPException(400, "Combined input too long for OpenAI.")
+        brief = generate_brief(combined_text, language)
+
         pdf_path = generate_pdf(brief)
-        
-        # Step 2: Use team data (custom or default)
-        if custom_team:
-            # Convert custom team data to TeamMember objects
-            team_members = [
-                TeamMember(
-                    name=member["name"],
-                    email=member["email"], 
-                    role=member["role"],
-                    department=member.get("department", "Unknown"),
-                    specialties=member.get("specialties", [])
-                )
-                for member in custom_team
-            ]
-        else:
-            # Use default EdgeVerve team
-            team_members = INFOSYS_TEAM
-        
-        # Step 3: Generate meeting schedule
+
+        team_members = INFOSYS_TEAM if not custom_team else [
+            TeamMember(
+                name=member["name"],
+                email=member["email"], 
+                role=member["role"],
+                department=member.get("department", "Unknown"),
+                specialties=member.get("specialties", [])
+            )
+            for member in custom_team
+        ]
+
         meetings = meeting_scheduler.schedule_meetings_fast(brief, team_members)
-        
-        # Step 4: Return comprehensive response
+
         return {
             "success": True,
             "brief": brief,
@@ -140,14 +139,15 @@ async def create_brief_with_meetings(
             "meetings": meetings_to_dict(meetings),
             "team_used": len(team_members),
             "file_info": {
-                "filename": file.filename,
-                "type": content["file_type"]
+                "filenames": [file.filename for file in files],
+                "total_files": len(files)
             }
         }
-        
+
     except Exception as e:
         logger.error(f"Error in brief_with_meetings: {e}")
         raise HTTPException(500, f"Failed to process: {str(e)}")
+    
 
 @app.get("/download-pdf/{filename}")
 async def download_pdf(filename: str):
