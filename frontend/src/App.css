@@ -173,3 +173,29 @@ body {
   color: #d00;
 }
 
+.download-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.download-btn {
+  background-color: #007cc3;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+  background-color: #005f99;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-items: center;
+  
+}

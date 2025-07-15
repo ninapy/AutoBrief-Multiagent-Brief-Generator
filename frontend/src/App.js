@@ -29,7 +29,7 @@ function App() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/brief-with-meetings", {
+      const response = await fetch("http://127.0.0.1:8000/brief", {
         method: "POST",
         body: formData,
       });
@@ -40,10 +40,10 @@ function App() {
       const url = window.URL.createObjectURL(blob);
 
       setPdfUrl(url);
-      setStatus("✅ Brief generated!");
+      setStatus("Brief generated!");
     } catch (err) {
       console.error(err);
-      setStatus("❌ Error: " + err.message);
+      setStatus("Error: " + err.message);
     }
   };
 
@@ -59,16 +59,21 @@ function App() {
         <p className="subtitle">Turn your media into concise creative briefs.</p>
       </div>
 
-      <form onSubmit={handleUpload} className="dropzone"
+      <form
+        className="dropzone"
         onClick={() => inputRef.current.click()}
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
         <img src="/upload-blue.png" alt="upload" className="upload-icon" />
         <p>
-          <strong>Drop your images here, or <span className="browse">browse</span></strong>
+          <strong>
+            Drop your images here, or <span className="browse">browse</span>
+          </strong>
         </p>
-        <p className="hint">Supports TXT, PDF, CSV, XLSX, PNG, JPG, MP3, MP4</p>
+        <p className="hint">
+          Supports TXT, PDF, CSV, XLSX, PNG, JPG, MP3, MP4
+        </p>
         <input
           type="file"
           onChange={handleFileChange}
@@ -77,11 +82,6 @@ function App() {
           required
         />
         {status && <div className="status">{status}</div>}
-        {pdfUrl && (
-          <div className="status">
-            <a href={pdfUrl} download="brief_output.pdf">Download Brief PDF</a>
-          </div>
-        )}
       </form>
 
       {file && (
@@ -104,10 +104,22 @@ function App() {
         </div>
       )}
 
+      <div className="buttons">
+        {file && (
+          <button onClick={handleUpload} className="generate-btn">
+            Generate Brief
+          </button>
+        )}
 
-      {file && (
-        <button type="submit" className="generate-btn">Generate Brief</button>
-      )}
+        {pdfUrl && (
+          <div className="download-section">
+            <a href={pdfUrl} download="brief_output.pdf" className="download-btn">
+              Download Brief PDF
+            </a>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }
