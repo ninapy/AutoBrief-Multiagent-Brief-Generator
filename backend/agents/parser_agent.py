@@ -1,6 +1,6 @@
 import filetype
 import logging
-from backend.utils.file_loader import load_pdf, load_image, load_text, load_csv, load_excel, normalize_text
+from utils.file_loader import load_pdf, load_image, load_text, load_csv, load_excel, normalize_text
 
 
 # Set up logging
