@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import traceback
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -29,4 +30,5 @@ def generate_brief(user_text: str, language: str = "English") -> str:
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
+        traceback.print_exc()
         return f"Error generating brief: {str(e)}"

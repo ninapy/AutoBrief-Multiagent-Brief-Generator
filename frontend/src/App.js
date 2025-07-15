@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import "./App.css";
 
 function App() {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState([]);
   const [status, setStatus] = useState("");
   const [pdfUrl, setPdfUrl] = useState(null);
   const [language, setLanguage] = useState("English");
@@ -12,7 +12,7 @@ function App() {
   const [showMeetings, setShowMeetings] = useState(false);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    setFile([...file, ...e.target.files]);
     setStatus("");
   };
 
@@ -30,7 +30,7 @@ function App() {
     setStatus("Generating brief and scheduling meetings...");
 
     const formData = new FormData();
-    formData.append("file", file);
+    file.forEach((f) => formData.append("files", f));
     formData.append("language", language);
 
 
@@ -120,32 +120,39 @@ function App() {
           ref={inputRef}
           hidden
           required
+          multiple
         />
         {status && <div className="status">{status}</div>}
       </form>
 
-      {file && (
-        <div className="file-preview">
+      {file.length > 0 && file.map((f, idx) => (
+        <div key={idx} className="file-preview">
           <div className="file-info">
             <img src="/file-icon.png" alt="file" className="file-icon" />
-            <span className="file-name">{file.name}</span>
+            <span className="file-name">{f.name}</span>
           </div>
           <button
             type="button"
             className="close-btn"
             onClick={() => {
-              setFile(null);
-              setPdfUrl(null);
-              setMeetings([]);
-              setBriefData(null);
-              setStatus("");
-              setShowMeetings(false);
+              const updatedFiles = [...file];
+              updatedFiles.splice(idx, 1);
+              setFile(updatedFiles);
+
+              if (updatedFiles.length === 0) {
+                setPdfUrl(null);
+                setMeetings([]);
+                setBriefData(null);
+                setStatus("");
+                setShowMeetings(false);
+              }
             }}
           >
             ×
           </button>
         </div>
-      )}
+      ))}
+
 
       <div className="buttons">
         {file && (
@@ -306,11 +313,13 @@ function App() {
           border: '1px solid #2196f3'
         }}>
           <h4 style={{ margin: '0 0 10px 0', color: '#1976d2' }}>
-            Brief Summary
+            📊 Brief Summary
           </h4>
+
           <p style={{ margin: '5px 0', fontSize: '14px' }}>
-            <strong>File processed:</strong> {briefData.file_info?.filename}
+            <strong>Files processed:</strong> {briefData.file_info?.filenames?.join(", ")}
           </p>
+
           <p style={{ margin: '5px 0', fontSize: '14px' }}>
             <strong>Team members involved:</strong> {briefData.team_used}
           </p>
@@ -319,6 +328,7 @@ function App() {
           </p>
         </div>
       )}
+
     </div>
   );
 }
