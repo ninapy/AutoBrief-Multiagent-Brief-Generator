@@ -5,6 +5,7 @@ import logging
 from dotenv import load_dotenv
 import os
 from fastapi.responses import FileResponse
+from fastapi import Form
 
 from agents.parser_agent import parse_file
 from agents.briefer_agent import generate_brief
@@ -96,6 +97,7 @@ meeting_scheduler = MeetingSchedulerAgent()
 @app.post("/brief-with-meetings")
 async def create_brief_with_meetings(
     file: UploadFile = File(...), 
+    language: str = Form("English"),
     custom_team: Optional[List[dict]] = None
 ):
     """
@@ -107,7 +109,7 @@ async def create_brief_with_meetings(
         if not content["success"]:
             raise HTTPException(400, content["error"])
         
-        brief = generate_brief(content["content"])
+        brief = generate_brief(content["content"], language)
         pdf_path = generate_pdf(brief)
         
         # Step 2: Use team data (custom or default)

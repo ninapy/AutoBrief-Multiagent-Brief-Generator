@@ -5,6 +5,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [language, setLanguage] = useState("English");
   const inputRef = useRef();
   const [meetings, setMeetings] = useState([]);
   const [briefData, setBriefData] = useState(null);
@@ -30,6 +31,8 @@ function App() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("language", language);
+
 
     try {
       const response = await fetch("http://127.0.0.1:8000/brief-with-meetings", {
@@ -78,6 +81,23 @@ function App() {
         <h1 className="title">AutoBrief</h1>
         <p className="subtitle">Turn your media into concise creative briefs.</p>
       </div>
+
+      <div className="language-selector">
+        <label htmlFor="language">Brief Language:</label>
+        <select
+          id="language"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+        >
+          <option value="English">English</option>
+          <option value="Spanish">Spanish</option>
+          <option value="French">French</option>
+          <option value="German">German</option>
+          <option value="Hindi">Hindi</option>
+          <option value="Chinese">Chinese</option>
+        </select>
+      </div>
+
 
       <form
         className="dropzone"
