@@ -11,7 +11,7 @@ from agents.parser_agent import parse_file
 from agents.briefer_agent import generate_brief
 from utils.pdf_generator import generate_pdf
 
-from agents.meeting_scheduler_agent import MeetingSchedulerAgent, TeamMember, meetings_to_dict
+from agents.meeting_scheduler_agent import MeetingSchedulerAgent, TeamMember, actions_to_dict, meetings_to_dict
 from mock_team_data import INFOSYS_TEAM, get_team_data_json
 from typing import List, Optional
 
@@ -130,13 +130,14 @@ async def create_brief_with_meetings(
             for member in custom_team
         ]
 
-        meetings = meeting_scheduler.schedule_meetings_fast(brief, team_members)
+        meetings, actions = meeting_scheduler.schedule_meetings_fast(brief, team_members)
 
         return {
             "success": True,
             "brief": brief,
             "pdf_path": pdf_path,
             "meetings": meetings_to_dict(meetings),
+            "actions": actions_to_dict(actions),
             "team_used": len(team_members),
             "file_info": {
                 "filenames": [file.filename for file in files],
