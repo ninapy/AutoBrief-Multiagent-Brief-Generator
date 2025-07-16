@@ -76,7 +76,10 @@ function App() {
     <div className="container">
       <div className="header">
         <img src="/infosys-logo.png" alt="Infosys" className="logo" />
-        <div className="signin">👤 Login/Sign In</div>
+        <div className="signin">
+          <img src="/user-icon.png" alt="User Icon" className="user-icon" />
+          Login / Sign In
+        </div>
       </div>
 
       <div className="titles">
@@ -190,6 +193,8 @@ function App() {
           <div className="meetings-section" style={{
             marginTop: '30px',
             padding: '20px',
+            paddingLeft: '18px',
+            paddingRight: '18px',
             backgroundColor: '#f8f9fa',
             borderRadius: '8px',
             border: '1px solid #dee2e6'
@@ -203,6 +208,8 @@ function App() {
                 backgroundColor: 'white',
                 border: '1px solid #dee2e6',
                 borderRadius: '6px',
+                paddingLeft: '100px',
+                paddingRight: '100px',
                 padding: '15px',
                 marginBottom: '15px',
                 boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
@@ -311,6 +318,7 @@ function App() {
         {showMeetings && actions.length > 0 && (
           <div className="actions-section" style={{
             marginTop: '30px',
+            marginBottom: '30px',
             padding: '20px',
             backgroundColor: '#f8f9fa',
             borderRadius: '8px',
