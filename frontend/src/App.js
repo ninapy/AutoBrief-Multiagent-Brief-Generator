@@ -9,7 +9,6 @@ function App() {
   const inputRef = useRef();
   const [meetings, setMeetings] = useState([]);
   const [actions, setActions] = useState([]);
-  const [briefData, setBriefData] = useState(null);
   const [showMeetings, setShowMeetings] = useState(false);
 
   const handleFileChange = (e) => {
@@ -47,7 +46,6 @@ function App() {
       // Set the meeting data
       setMeetings(data.meetings || []);
       setActions(data.actions || []);
-      setBriefData(data);
 
       const pdfResponse = await fetch(`http://127.0.0.1:8000/download-pdf/${data.pdf_path}`);
       if (pdfResponse.ok) {
@@ -144,7 +142,6 @@ function App() {
               if (updatedFiles.length === 0) {
                 setPdfUrl(null);
                 setMeetings([]);
-                setBriefData(null);
                 setStatus("");
                 setShowMeetings(false);
                 setActions([]);
