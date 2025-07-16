@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from datetime import datetime, timedelta
 import json
 import uuid
@@ -36,11 +36,23 @@ class Meeting:
     meeting_type: str
     priority: str
 
+@dataclass
+class Action:
+    task: str
+    assignee_name: List[str]
+    assignee_role: List[str] 
+    assignee_departments: List[str]
+    priority: str  # "high", "medium", "low"
+    deadline: str  # "1_day", "3_days", "1_week", "2_weeks"
+    category: str  # "research", "design", "content", "approval", "logistics"
+    dependencies: List[str]
+    deliverable: str
+
 class MeetingSchedulerAgent:
     def __init__(self):
         self.mock_teams_domain = "https://teams.microsoft.com/l/meetup-join/"
     
-    def schedule_meetings_fast(self, brief_content: str, team_members: List[TeamMember]) -> List[Meeting]:
+    def schedule_meetings_fast(self, brief_content: str, team_members: List[TeamMember]):
         """
         Schedule meetings based off brief
         """
@@ -52,8 +64,7 @@ class MeetingSchedulerAgent:
         
         # Single comprehensive prompt
         prompt = f"""
-        Analyze this brief and generate a complete meeting schedule. Choose attendees from the available team based on their
-        role and department's relevance to the project needs mentioned in the brief
+        You are a meeting scheduler. Based on the brief content, create a JSON response with suggested meetings.
         
         BRIEF:
         {brief_content}
@@ -61,7 +72,7 @@ class MeetingSchedulerAgent:
         AVAILABLE TEAM:
         {chr(10).join(team_summary)}
         
-        Generate a JSON response with this exact structure:
+        IMPORTANT: Respond ONLY with valid JSON in this exact format:
         {{
             "project_analysis": {{
                 "urgency": "high|medium|low",
@@ -72,31 +83,47 @@ class MeetingSchedulerAgent:
                 {{
                     "type": "kickoff|creative_review|approval|status_update",
                     "priority": "high|medium|low",
-                    "attendee_indices": [0, 1, 2],
+                    "attendee_indices": [0, 1, 2, etc],
                     "title": "Meeting Title",
-                    "agenda_bullets": ["Point 1", "Point 2", "Point 3"],
-                    "duration_minutes": 60,
+                    "agenda_bullets": ["Point 1", "Point 2", "Point 3", etc],
+                    "duration_minutes": 30|60|90|120,
                     "timing": "asap|2_days|1_week"
+                }}
+            ]
+            "actionable_items": [
+                {{
+                    "task": "Task description",
+                    "assignee_index": 0,
+                    "priority": "high|medium|low",
+                    "deadline": "1_day|3_days|1_week|2_weeks",
+                    "category": "research|design|content|approval|logistics",
+                    "dependencies": ["Optional task dependencies"],
+                    "deliverable": "What needs to be produced"
                 }}
             ]
         }}
         
         Rules:
         - Select 2-5 meetings based on brief complexity
-        - Choose attendees from the team list by their job title's relevance to the project need
+        - Choose attendees from the team list by their job title's relevance to the project need and identify them by their indices
         - Keep agendas focused (3-5 bullets)
+        - Generate 3-8 actionable items that support the project goals
+        - Assign tasks to team members based on their expertise
+        - Include pre-meeting preparation tasks
+        - Prioritize items that unblock other work
+        - Consider content creation, approvals, and logistics
         """
         
         try:
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
+                messages=[{"role": "system", "content": prompt}],
                 temperature=0.3,
                 max_tokens=1500  # Increased for full response
             )
             
             # Parse response
-            ai_response = json.loads(response['choices'][0]['message']['content'])
+            ai_response = json.loads(response.choices[0].message.content)
             
             # Convert to Meeting objects
             meetings = []
@@ -124,7 +151,26 @@ class MeetingSchedulerAgent:
                 )
                 meetings.append(meeting)
             
-            return meetings
+            # Convert to Actionable item objects
+            actions = []
+            for action_data in ai_response['actionable_items']:
+                assignee = team_members[action_data['assignee_index']]
+                
+                # Create meeting object
+                action = Action(
+                    task=action_data['task'],
+                    assignee_name=[assignee.name],
+                    assignee_role=[assignee.role],
+                    assignee_departments=[assignee.department],
+                    priority=action_data['priority'],
+                    deadline=action_data['deadline'],
+                    category=action_data['category'],
+                    dependencies=action_data['dependencies'],
+                    deliverable=action_data['deliverable']
+                )
+                actions.append(action)
+            
+            return meetings, actions
             
         except Exception as e:
             logging.error(f"Error in optimized scheduler: {e}")
@@ -174,3 +220,7 @@ class MeetingSchedulerAgent:
 def meetings_to_dict(meetings: List[Meeting]) -> List[Dict]:
     """Convert Meeting objects to dictionaries for API response"""
     return [asdict(meeting) for meeting in meetings]
+
+def actions_to_dict(actions: List[Action]) -> List[Dict]:
+    """Convert Meeting objects to dictionaries for API response"""
+    return [asdict(action) for action in actions]

@@ -8,6 +8,7 @@ function App() {
   const [language, setLanguage] = useState("English");
   const inputRef = useRef();
   const [meetings, setMeetings] = useState([]);
+  const [actions, setActions] = useState([]);
   const [briefData, setBriefData] = useState(null);
   const [showMeetings, setShowMeetings] = useState(false);
 
@@ -27,7 +28,7 @@ function App() {
     e.preventDefault();
     if (!file) return;
 
-    setStatus("Generating brief and scheduling meetings...");
+    setStatus("Generating brief...");
 
     const formData = new FormData();
     file.forEach((f) => formData.append("files", f));
@@ -45,6 +46,7 @@ function App() {
       const data = await response.json();
       // Set the meeting data
       setMeetings(data.meetings || []);
+      setActions(data.actions || []);
       setBriefData(data);
 
       const pdfResponse = await fetch(`http://127.0.0.1:8000/download-pdf/${data.pdf_path}`);
@@ -145,6 +147,7 @@ function App() {
                 setBriefData(null);
                 setStatus("");
                 setShowMeetings(false);
+                setActions([]);
               }
             }}
           >
@@ -171,7 +174,7 @@ function App() {
                 onClick={() => setShowMeetings(!showMeetings)} 
                 className="meetings-btn"
               >
-                {showMeetings ? 'Hide' : 'Show'} Meetings ({meetings.length})
+                {showMeetings ? 'Hide' : 'Show'} Details ({meetings.length})
               </button>
             )}
           </div>
@@ -298,28 +301,164 @@ function App() {
             ))}
           </div>
         )}
-
-        {/* Brief Summary */}
-        {briefData && (
-          <div className="brief-summary" style={{
-            marginTop: '20px',
-            padding: '15px',
-            backgroundColor: '#e3f2fd',
-            borderRadius: '6px',
-            border: '1px solid #2196f3'
+      </div>
+       <div style={{ 
+        display: 'flex', 
+        gap: '15px',           // Space between items
+        alignItems: 'center'   // Vertically center
+      }}>
+        {/* Actions Display */}
+        {showMeetings && actions.length > 0 && (
+          <div className="actions-section" style={{
+            marginTop: '30px',
+            padding: '20px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '8px',
+            border: '1px solid #dee2e6'
           }}>
-            <h4 style={{ margin: '0 0 10px 0', color: '#1976d2' }}>
-              Brief Summary
-            </h4>
-            <p style={{ margin: '5px 0', fontSize: '14px' }}>
-              <strong>File processed:</strong> {briefData.file_info?.filename}
-            </p>
-            <p style={{ margin: '5px 0', fontSize: '14px' }}>
-              <strong>Team members involved:</strong> {briefData.team_used}
-            </p>
-            <p style={{ margin: '5px 0', fontSize: '14px' }}>
-              <strong>Meetings scheduled:</strong> {meetings.length}
-            </p>
+            <h3 style={{ color: '#343a40', marginBottom: '20px', textAlign: 'center' }}>
+              Actionable Items ({actions.length})
+            </h3>
+            
+            {actions.map((action, index) => (
+              <div key={index} style={{
+                backgroundColor: 'white',
+                border: '1px solid #dee2e6',
+                borderRadius: '6px',
+                padding: '15px',
+                marginBottom: '15px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: '10px'
+                }}>
+                  <h4 style={{ 
+                    margin: 0, 
+                    color: '#007bff',
+                    fontSize: '16px',
+                    flex: 1,
+                    paddingRight: '10px'
+                  }}>
+                    {action.task}
+                  </h4>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <span style={{
+                      backgroundColor: action.priority === 'high' ? '#dc3545' : 
+                                    action.priority === 'medium' ? '#ffc107' : '#28a745',
+                      color: action.priority === 'medium' ? '#000' : '#fff',
+                      padding: '3px 8px',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      fontWeight: 'bold'
+                    }}>
+                      {action.priority?.toUpperCase()}
+                    </span>
+                    <span style={{
+                      backgroundColor: '#6c757d',
+                      color: '#fff',
+                      padding: '3px 8px',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      fontWeight: 'bold'
+                    }}>
+                      {action.category?.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  <div>
+                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                      <strong>Assigned to:</strong> {action.assignee_name?.[0] || 'Unassigned'}
+                    </p>
+                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                      <strong>Role:</strong> {action.assignee_role?.[0] || 'N/A'}
+                    </p>
+                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                      <strong>Department:</strong> {action.assignee_departments?.[0] || 'N/A'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                      <strong>Deadline:</strong> 
+                      <span style={{
+                        color: action.deadline === '1_day' ? '#dc3545' : 
+                              action.deadline === '3_days' ? '#fd7e14' : '#28a745',
+                        fontWeight: 'bold',
+                        marginLeft: '5px'
+                      }}>
+                        {action.deadline?.replace('_', ' ') || 'Not set'}
+                      </span>
+                    </p>
+                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                      <strong>Deliverable:</strong> {action.deliverable || 'Not specified'}
+                    </p>
+                  </div>
+                </div>
+
+                {action.dependencies && action.dependencies.length > 0 && (
+                  <div style={{ marginTop: '10px' }}>
+                    <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                      <strong>Dependencies:</strong>
+                    </p>
+                    <ul style={{ margin: '5px 0', paddingLeft: '20px', fontSize: '13px' }}>
+                      {action.dependencies.map((dependency, i) => (
+                        <li key={i} style={{ color: '#6c757d' }}>
+                          {dependency}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Progress/Status indicator */}
+                <div style={{
+                  marginTop: '15px',
+                  padding: '8px 12px',
+                  backgroundColor: '#e9ecef',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  color: '#495057',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span>
+                    <strong>Status:</strong> Pending
+                  </span>
+                  <span style={{
+                    backgroundColor: action.priority === 'high' ? '#fff3cd' : 
+                                  action.priority === 'medium' ? '#d1ecf1' : '#d4edda',
+                    color: action.priority === 'high' ? '#856404' : 
+                          action.priority === 'medium' ? '#0c5460' : '#155724',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    fontSize: '11px'
+                  }}>
+                    {action.priority === 'high' ? '🔥 Urgent' : 
+                    action.priority === 'medium' ? '⏰ Soon' : '✅ Scheduled'}
+                  </span>
+                </div>
+              </div>
+            ))}
+            
+            {/* Summary footer */}
+            <div style={{
+              marginTop: '20px',
+              padding: '15px',
+              backgroundColor: '#e7f3ff',
+              borderRadius: '6px',
+              fontSize: '14px',
+              color: '#004085'
+            }}>
+              <strong>Summary:</strong> {actions.filter(a => a.priority === 'high').length} high priority, {' '}
+              {actions.filter(a => a.priority === 'medium').length} medium priority, {' '}
+              {actions.filter(a => a.priority === 'low').length} low priority items
+            </div>
           </div>
         )}
       </div>
