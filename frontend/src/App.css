@@ -175,6 +175,10 @@ body {
 .download-section {
   margin-top: 20px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
 }
 
 .download-btn {
