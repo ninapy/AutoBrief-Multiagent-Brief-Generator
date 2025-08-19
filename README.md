@@ -1,6 +1,8 @@
 # AutoBrief: Auto-Generating Insight-Driven Creative Briefs from Business Inputs
 
-## 🎥 Demo
+## Demo
+
+[Watch the 2-min demo](https://youtu.be/yqm-2ItKmmU)
 
 [![Watch the demo](./assets/demo-thumb.png)](https://youtu.be/yqm-2ItKmmU)
 
@@ -13,7 +15,6 @@
 </video>
 
 </details>
-
 
 ## Overview
 
