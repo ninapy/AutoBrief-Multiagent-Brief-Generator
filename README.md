@@ -1,10 +1,18 @@
 # AutoBrief: Auto-Generating Insight-Driven Creative Briefs from Business Inputs
 
-## Demo
+## 🎥 Demo
+
+[![Watch the demo](./assets/demo-thumb.png)](https://youtu.be/yqm-2ItKmmU)
+
+<details>
+<summary>Prefer inline playback?</summary>
+
 <video src="assets/demo.mov" controls width="720">
   Your browser doesn’t support video. Watch on
-  <a href="https://youtu.be/your_video_id">YouTube</a>.
+  <a href="https://youtu.be/yqm-2ItKmmU">YouTube</a>.
 </video>
+
+</details>
 
 
 ## Overview
