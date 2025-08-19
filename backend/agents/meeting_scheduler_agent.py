@@ -174,8 +174,10 @@ class MeetingSchedulerAgent:
             
         except Exception as e:
             logging.error(f"Error in optimized scheduler: {e}")
-            # Fallback to basic meeting
-            return self._create_fallback_meeting(team_members[:3], brief_content)
+            fallback_meetings = self._create_fallback_meeting(team_members[:3], brief_content)
+            fallback_actions = []
+            return fallback_meetings, fallback_actions
+
     
     def _calculate_time_fast(self, timing: str, priority: str) -> str:
         """Fast time calculation without complex logic"""
