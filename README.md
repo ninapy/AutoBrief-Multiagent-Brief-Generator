@@ -62,6 +62,25 @@ Marketing teams, creative agencies, and business leaders who need to quickly tra
 
 ## Setup & Run
 
+### API Setup
+
+AutoBrief uses the OpenAI API for brief generation.
+
+1) **Create your API key**
+   - Go to your OpenAI account → API keys → create a new key (https://platform.openai.com/settings/organization/api-keys).
+   - Copy the full key (starts with `sk-`, no spaces).
+
+2) **Add it to `backend/.env`**
+   - In the `BizHacks/backend` folder, create a file named `.env` with exactly:
+     ```
+     OPENAI_API_KEY=sk-your-real-full-key-here
+     ```
+        No quotes, no trailing spaces, no extra characters.
+
+3) **Keep it secret**
+   - Make sure `.env` is **ignored by git** (your repo should include `.gitignore`; if not, add a line with `.env`).  
+   - Never commit your API key.
+
 ### Backend (FastAPI + Python)
 
 ```bash
